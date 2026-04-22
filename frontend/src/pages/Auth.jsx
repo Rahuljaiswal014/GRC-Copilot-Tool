@@ -29,7 +29,7 @@ export default function Auth() {
 
   return (
     <div className="page" style={{ background: "var(--bg-color)" }}>
-      <div className="card" style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", border: "1px solid var(--cyber-border)" }}>
+      <div className="card card-narrow" style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", border: "1px solid var(--cyber-border)" }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ 
             width: 48, height: 48, background: "var(--primary)", borderRadius: 12, 

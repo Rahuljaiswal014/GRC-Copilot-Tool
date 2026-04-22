@@ -40,12 +40,14 @@ const FRAMEWORK_MAP = {
 
 // Questions per depth level
 const DEPTH_QUESTION_COUNTS = { 
-  quick: 6, 
-  full: 20, 
-  internal: 12, 
-  vendor: 12, 
-  risk: 12, 
-  gap: 12 
+  quick: 15, 
+  standard: 35,
+  comprehensive: 60,
+  full: 100, 
+  internal: 40, 
+  vendor: 40, 
+  risk: 40, 
+  gap: 40 
 };
 
 // Seed question bank to MongoDB on startup
@@ -125,6 +127,13 @@ async function seedQuestions() {
 // Run seeding on module load
 setTimeout(seedQuestions, 3000);
 
+// Map frontend depth names to backend depth tags
+const DEPTH_MAP = {
+  'standard': 'intermediate',
+  'comprehensive': 'deep',
+  'full': 'deep'
+};
+
 // GET /api/questionnaire/generate
 router.get('/generate', authenticate, async (req, res, next) => {
   try {
@@ -150,12 +159,17 @@ router.get('/generate', authenticate, async (req, res, next) => {
     const frameworkFrontend = assessment.framework;
     const frameworkBackend = FRAMEWORK_MAP[frameworkFrontend] || frameworkFrontend;
     const depth = assessment.analysis_depth;
-    const maxQuestions = DEPTH_QUESTION_COUNTS[depth] || 8;
+    
+    // Map depth for query (e.g., 'standard' -> 'intermediate')
+    const queryDepth = DEPTH_MAP[depth] || depth;
+    const maxQuestions = DEPTH_QUESTION_COUNTS[depth] || 15;
+
+    logger.info(`Generating questionnaire for ${frameworkBackend} at ${depth} depth (querying for ${queryDepth}, max ${maxQuestions})`);
 
     // Get questions from MongoDB filtered by framework and depth
     const questions = await Question.find({
       framework: frameworkBackend,
-      depth_levels: depth,
+      depth_levels: queryDepth,
     }).sort({ weight: -1 }).limit(maxQuestions);
 
     // If MongoDB is empty, fall back to in-memory question bank
@@ -165,7 +179,7 @@ router.get('/generate', authenticate, async (req, res, next) => {
       const allQ = [];
       for (const [cat, qs] of Object.entries(bank)) {
         for (const q of qs) {
-          if (q.depth.includes(depth)) {
+          if (q.depth.includes(queryDepth) || q.depth.includes('quick')) {
             allQ.push({ ...q, category: cat });
           }
         }
@@ -252,12 +266,14 @@ router.get('/frameworks', authenticate, async (req, res) => {
       },
     },
     depth_options: {
-      quick: { questions: 6, estimated_minutes: 3 },
-      full: { questions: 20, estimated_minutes: 15 },
-      internal: { questions: 12, estimated_minutes: 8 },
-      vendor: { questions: 12, estimated_minutes: 8 },
-      risk: { questions: 12, estimated_minutes: 8 },
-      gap: { questions: 12, estimated_minutes: 8 },
+      quick: { questions: 15, estimated_minutes: 10 },
+      standard: { questions: 35, estimated_minutes: 30 },
+      comprehensive: { questions: 60, estimated_minutes: 60 },
+      full: { questions: 100, estimated_minutes: 120 },
+      internal: { questions: 40, estimated_minutes: 45 },
+      vendor: { questions: 40, estimated_minutes: 45 },
+      risk: { questions: 40, estimated_minutes: 45 },
+      gap: { questions: 40, estimated_minutes: 45 },
     },
   });
 });

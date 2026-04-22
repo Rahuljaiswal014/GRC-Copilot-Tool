@@ -5,7 +5,7 @@ const riskService = require('../../risk/services/risk.service');
 const insuranceService = require('../../insurance/services/insurance.service');
 const gapAnalysisService = require('../../assessment/services/gap_analysis.service');
 const assessmentService = require('../../assessment/services/assessment.service');
-const { AssessmentResponse, EvidenceFile } = require('../../../config/mongo');
+const { AssessmentResponse, EvidenceFile, AssessmentQuestionnaire } = require('../../../config/mongo');
 const { getAssessmentTypeConfig, getStatusFromScore } = require('../../../data/assessmentTypeConfig');
 
 /**
@@ -69,6 +69,15 @@ class ReportingService {
     // 8. Get evidence count from MongoDB
     const evidenceCount = await EvidenceFile.countDocuments({ assessment_id: assessmentId });
 
+    // 8a. Get Questionnaire snapshot to provide question text and hints to FastAPI
+    const questionnaire = await AssessmentQuestionnaire.findOne({ assessment_id: assessmentId }).lean();
+    const questionMap = {};
+    if (questionnaire && questionnaire.questions) {
+      questionnaire.questions.forEach(q => {
+        questionMap[q.question_id] = { text: q.text, hint: q.hint };
+      });
+    }
+
     // 9. Try FastAPI for AI-enhanced analysis, fallback to heuristic
     try {
       const analysisRequest = {
@@ -90,6 +99,8 @@ class ReportingService {
           category: r.category || r.domain,
           domain: r.domain,
           control: r.control,
+          text: questionMap[r.question_id]?.text || '',
+          hint: questionMap[r.question_id]?.hint || '',
           weight: parseFloat(r.weight || 1.0),
           critical: r.critical,
         })),
@@ -97,8 +108,12 @@ class ReportingService {
         evidence_total: evidenceCount,
       };
 
-      const fastapiResponse = await axios.post(`${FASTAPI_URL}/generate-report`, analysisRequest, {
-        timeout: 30000
+      const fastapiResponse = await axios.post(`${FASTAPI_URL}/analysis/generate-report`, analysisRequest, {
+        timeout: 30000,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Internal-Service': 'grc-gateway'
+        }
       });
       return this.mergeReportData(fastapiResponse.data, scoreData, domainBreakdown, gapData, financialSummary, assessmentType, insuranceReadiness);
     } catch (apiErr) {

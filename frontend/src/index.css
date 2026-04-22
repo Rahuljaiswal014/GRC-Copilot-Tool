@@ -70,12 +70,12 @@ body {
   border-radius: 12px;
   padding: 40px;
   width: 100%;
-  max-width: 520px;
   box-shadow: var(--shadow-lg);
   color: var(--text-main);
   transition: all 0.2s ease;
 }
 
+.card-narrow { max-width: 520px; }
 .card-wide { max-width: 1000px; }
 
 /* ── Typography ── */

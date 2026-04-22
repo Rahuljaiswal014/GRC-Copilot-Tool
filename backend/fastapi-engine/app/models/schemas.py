@@ -8,9 +8,12 @@ class ResponseItem(BaseModel):
     answer_text: Optional[str] = None
     maturity_score: Optional[int] = None
     category: Optional[str] = None
+    domain: Optional[str] = None
+    control: Optional[str] = None
     text: Optional[str] = None
     hint: Optional[str] = None
     weight: float = 1.0
+    critical: bool = False
     evidence_count: int = 0
 
 

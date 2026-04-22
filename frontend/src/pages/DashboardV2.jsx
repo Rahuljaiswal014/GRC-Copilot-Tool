@@ -284,7 +284,7 @@ export default function DashboardV2() {
       <div style={{ maxWidth: 1200, width: "96%", display: "flex", flexDirection: "column", gap: 24 }}>
         {/* TOP ROW: SCORES & KEY STATS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 24 }}>
-          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12, maxWidth: "none" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", marginBottom: 8 }}>
               Compliance Score
             </div>
@@ -292,13 +292,13 @@ export default function DashboardV2() {
               {Math.round(stats.compliance_percentage || 0)}%
             </div>
           </div>
-          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12, maxWidth: "none" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", marginBottom: 8 }}>
               Risks
             </div>
             <div style={{ fontSize: "2.5rem", fontWeight: 800, color: "#ef4444" }}>{stats.total_risks || 0}</div>
           </div>
-          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12, maxWidth: "none" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", marginBottom: 8 }}>
               Total Est. Cost
             </div>
@@ -306,7 +306,7 @@ export default function DashboardV2() {
               {formatCurrency((report?.cost_summary?.total_estimated_inr || 0) / 83.5, selectedCurrency, true)}
             </div>
           </div>
-          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12, maxWidth: "none" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", marginBottom: 8 }}>
               Maturity
             </div>
@@ -314,7 +314,7 @@ export default function DashboardV2() {
               {Math.round((stats.compliance_percentage || 0) / 20)}
             </div>
           </div>
-          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, textAlign: "center", borderRadius: 12, maxWidth: "none" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", marginBottom: 8 }}>
               Insurance Rec.
             </div>
@@ -325,7 +325,7 @@ export default function DashboardV2() {
         </div>
 
         {/* CYBER INSURANCE RECOMMENDATION */}
-        <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+        <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
           <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 20 }}>
             Cyber Insurance Recommendation
           </h3>
@@ -391,7 +391,7 @@ export default function DashboardV2() {
         {/* ACTIVITY FEED + DOMAIN PROGRESS */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
           {/* Recent Activity */}
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 16 }}>
               Recent Activity
             </h3>
@@ -436,7 +436,7 @@ export default function DashboardV2() {
           </div>
 
           {/* Domain Progress */}
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 16 }}>
               Domain Progress
             </h3>
@@ -476,13 +476,13 @@ export default function DashboardV2() {
 
         {/* MIDDLE ROW: CHARTS */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 20 }}>
               Domain Performance Radar
             </h3>
             <RiskRadar data={compliance_chart.domain_scores} />
           </div>
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 20 }}>
               Risk Matrix (Heat Map)
             </h3>
@@ -493,7 +493,7 @@ export default function DashboardV2() {
         {/* BOTTOM ROW: TABLES & LISTS */}
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {/* IDENTIFIED RISKS */}
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 16 }}>
               Identified Risks
             </h3>
@@ -534,7 +534,7 @@ export default function DashboardV2() {
           </div>
 
           {/* GAP ANALYSIS SUMMARY */}
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 16 }}>
               Gap Analysis Table
             </h3>
@@ -588,7 +588,7 @@ export default function DashboardV2() {
 
         {/* RECOMMENDATIONS (WIDER) */}
         {gapRecommendations.length > 0 && (
-          <div className="card" style={{ padding: 24, borderRadius: 12 }}>
+          <div className="card" style={{ padding: 24, borderRadius: 12, maxWidth: "none" }}>
             <h3 style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#64748b", marginBottom: 16 }}>
               Key Recommendations
             </h3>
