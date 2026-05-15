@@ -209,8 +209,6 @@ Authorization: Bearer <token>
 }
 ```
 
----
-
 ### Dashboard & Reports
 
 | Method | Endpoint | Auth | Description |
@@ -220,7 +218,30 @@ Authorization: Bearer <token>
 | GET | `/api/reports/:reportId` | JWT | Full report document |
 | GET | `/api/reports/:reportId/sections/:section` | JWT | Single report section |
 
-**Dashboard response includes:**
+---
+
+### AI Compliance Agent
+
+The AI Compliance Agent is a specialized tool that extracts security controls from policy documents and maps them to frameworks.
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/agent/compliance/upload-policy` | JWT | Upload a policy document (PDF, DOCX, TXT) |
+| POST | `/api/agent/compliance/run` | JWT | Run the full mapping agent on a document |
+| GET | `/api/agent/compliance/report/:reportId` | JWT | Get a structured mapping report |
+
+**Capabilities:**
+- **Parsing:** Automated text extraction from PDF, DOCX, and TXT files.
+- **Extraction:** Pattern-based and keyword-based identification of security controls.
+- **Mapping:** Intelligence-driven mapping to ISO 27001, GDPR, and SOC 2.
+- **Gap Analysis:** Identification of missing controls based on mapped data.
+- **Risk Identification:** Conversion of gaps into potential business risks.
+- **Remediation:** Actionable recommendations for closing gaps.
+
+---
+
+### FastAPI (Internal — called by Node.js)
+
 - Compliance score + risk level
 - Domain breakdown scores
 - Control status (implemented/partial/missing)

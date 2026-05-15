@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/assessment/:id/questions', authenticate, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const questions = await questionnaireService.getQuestionsForAssessment(id);
+    const questions = await questionnaireService.getQuestionsForAssessment(id, req.user.user_id);
     res.json({ questions });
   } catch (err) {
     if (err.message.includes('No frameworks linked')) {

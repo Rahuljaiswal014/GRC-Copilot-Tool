@@ -128,7 +128,7 @@ export default function Start() {
     // Auto-poll every 5 seconds so new/completed assessments appear automatically
     const interval = setInterval(fetchStats, 5000);
     return () => clearInterval(interval);
-  }, [toast]);
+  }, []);
 
   const typeGroups = useMemo(() => {
     // Initialize groups for all types defined in ASSESSMENT_INFO
@@ -492,16 +492,6 @@ export default function Start() {
                 )}
               </div>
             </div>
-
-            <div style={{ marginTop: 64, textAlign: "center" }}>
-              <button
-                className="btn btn-primary"
-                onClick={startNewFlow}
-                style={{ height: 60, fontSize: "1.1rem", maxWidth: 350, borderRadius: 30, padding: "0 40px" }}
-              >
-                + Start New Assessment
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -617,7 +607,7 @@ export default function Start() {
                   <button className="btn btn-primary" onClick={() => navigate("/agent")} style={{ width: "100%" }}>
                     Launch AI Agent
                   </button>
-                ) : (
+                ) : (overlayInfo.id === "full" || overlayInfo.id === "quick") && (
                   <button
                     className="btn btn-primary"
                     onClick={() => startNewFlow(overlayInfo.id)}

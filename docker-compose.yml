@@ -40,16 +40,16 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3000
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=grc_copilot
-      - POSTGRES_USER=grc_user
-      - POSTGRES_PASSWORD=grc_secure_password_2025
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE=grc_copilot
+      - PG_USER=grc_user
+      - PG_PASSWORD=grc_secure_password_2025
       - MONGO_URI=mongodb://mongodb:27017/grc_copilot
       - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
       - CORS_ORIGIN=http://localhost:5173
       - RATE_LIMIT_WINDOW_MS=900000
-      - RATE_LIMIT_MAX=100
+      - RATE_LIMIT_MAX=10000
       - MAX_FILE_SIZE_MB=10
       - UPLOAD_DIR=./uploads
       - FASTAPI_URL=http://fastapi-engine:8000
@@ -59,6 +59,7 @@ services:
       mongodb:
         condition: service_healthy
     volumes:
+      - ./backend/node-gateway/src:/app/src
       - ./backend/node-gateway/uploads:/app/uploads
 
   fastapi-engine:
@@ -68,8 +69,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://grc_user:grc_secure_password_2025@postgres:5432/grc_copilot
+      - PG_DSN=postgresql://grc_user:grc_secure_password_2025@postgres:5432/grc_copilot
       - MONGO_URI=mongodb://mongodb:27017/grc_copilot
+    volumes:
+      - ./backend/fastapi-engine/app:/app/app
+      - ./backend/fastapi-engine/main.py:/app/main.py
     depends_on:
       postgres:
         condition: service_healthy
@@ -83,7 +87,12 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_BASE=http://localhost:3000
+      - VITE_API_BASE=/api
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/index.html:/app/index.html
     depends_on:
       - node-gateway
 
@@ -93,4 +102,4 @@ volumes:
 
 networks:
   default:
-    name: grc_network
+    driver: bridge

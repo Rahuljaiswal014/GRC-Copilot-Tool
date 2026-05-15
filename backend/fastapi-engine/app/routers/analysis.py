@@ -36,8 +36,9 @@ async def generate_report(req: AnalysisRequest):
     """Full analysis pipeline: score → gaps → recommendations → cost → persist."""
     try:
         # Run the analysis
-        analysis = run_full_analysis({
+        analysis = run_full_analysis.run_analysis({
             "assessment_id": req.assessment_id,
+
             "framework": req.framework,
             "analysis_depth": req.analysis_depth,
             "organization": req.organization.model_dump(),

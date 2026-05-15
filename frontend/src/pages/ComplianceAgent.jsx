@@ -82,6 +82,17 @@ const ComplianceAgent = () => {
 
       {result && (
         <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+          <div style={{ marginBottom: '30px', padding: '15px 20px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div>
+              <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>Analyzed: </span>
+              <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>{result.metadata?.filename || file.name}</span>
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>Date: </span>
+              <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>{new Date(result.metadata?.timestamp || Date.now()).toLocaleString()}</span>
+            </div>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px' }}>
             <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '25px', borderRadius: '12px', borderLeft: '5px solid var(--primary)' }}>
               <p style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '5px' }}>Controls Found</p>

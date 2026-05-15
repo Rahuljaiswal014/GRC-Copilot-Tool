@@ -38,7 +38,8 @@ function headers(extra = {}) {
 }
 
 async function request(path, options = {}) {
-  const url = `${API_BASE}${path}`;
+  const separator = path.includes('?') ? '&' : '?';
+  const url = `${API_BASE}${path}${separator}_t=${Date.now()}`;
   const res = await fetch(url, {
     ...options,
     headers: headers(options.headers),
@@ -51,6 +52,10 @@ async function request(path, options = {}) {
     const error = new Error(data.error || `API error: ${res.status}`);
     error.status = res.status;
     error.data = data;
+    if (res.status === 401) {
+      logout();
+      window.location.href = "/auth";
+    }
     throw error;
   }
 
@@ -65,6 +70,7 @@ export async function register(email, password, orgName) {
   });
   setToken(data.token);
   setCurrentUser({ user_id: data.user_id, email: data.email, role: data.role, org_id: data.org_id });
+  sessionStorage.clear(); // Clear any stale progress from other users
   return data;
 }
 
@@ -75,6 +81,7 @@ export async function login(email, password) {
   });
   setToken(data.token);
   setCurrentUser({ user_id: data.user_id, email: data.email, role: data.role, org_id: data.org_id });
+  sessionStorage.clear(); // Clear any stale progress from other users
   return data;
 }
 
@@ -85,6 +92,7 @@ export async function getProfile() {
 export function logout() {
   setToken(null);
   setCurrentUser(null);
+  sessionStorage.clear();
 }
 
 export function isAuthenticated() {

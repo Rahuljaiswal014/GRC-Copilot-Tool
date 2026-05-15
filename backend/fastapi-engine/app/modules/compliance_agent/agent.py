@@ -5,6 +5,7 @@ from .gap_analysis import gap_analysis
 from .risk_engine import risk_engine
 from .recommendation_engine import recommendation_engine
 from loguru import logger
+from datetime import datetime
 
 class ComplianceMappingAgent:
     """The main agent that orchestrates the entire compliance mapping process."""
@@ -30,7 +31,20 @@ class ComplianceMappingAgent:
         # 6. Generate recommendations
         recommendations = recommendation_engine.generate_recommendations(gaps)
         
+        # Calculate some stats
+        total_controls = len(extracted_controls)
+        mapped_count = sum(1 for c in mapped_controls if c.get("mappings"))
+        
         return {
+            "metadata": {
+                "filename": filename,
+                "timestamp": datetime.utcnow().isoformat(),
+                "total_controls_found": total_controls,
+                "mapped_controls_count": mapped_count,
+                "unmapped_controls_count": total_controls - mapped_count,
+                "total_gaps": len(gaps),
+                "total_risks": len(risks)
+            },
             "controls_found": extracted_controls,
             "mapped_controls": mapped_controls,
             "gaps": gaps,

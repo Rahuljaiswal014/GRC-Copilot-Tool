@@ -1,5 +1,6 @@
 import io
 from docx import Document
+from pypdf import PdfReader
 from loguru import logger
 
 class PolicyParser:
@@ -12,9 +13,7 @@ class PolicyParser:
         elif filename.endswith(".docx"):
             return self._parse_docx(file_content)
         elif filename.endswith(".pdf"):
-            # Placeholder for PDF parsing
-            logger.warning("PDF parsing is not yet fully implemented. Using mock extraction.")
-            return "This is a mock text extracted from PDF. [CONTROL-1]: Ensure all passwords are encrypted."
+            return self._parse_pdf(file_content)
         else:
             raise ValueError(f"Unsupported file format: {filename}")
 
@@ -23,6 +22,13 @@ class PolicyParser:
         full_text = []
         for para in doc.paragraphs:
             full_text.append(para.text)
+        return "\n".join(full_text)
+
+    def _parse_pdf(self, file_content: bytes) -> str:
+        reader = PdfReader(io.BytesIO(file_content))
+        full_text = []
+        for page in reader.pages:
+            full_text.append(page.extract_text())
         return "\n".join(full_text)
 
 policy_parser = PolicyParser()

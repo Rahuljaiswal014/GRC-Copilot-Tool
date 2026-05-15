@@ -71,6 +71,9 @@ export default function QuestionnaireEnhanced() {
     } catch (err) {
       console.error("Failed to load questions:", err);
       toast.addToast(err.message || "Failed to load questions", "error");
+      if (err.status === 404 || err.status === 403 || err.message.includes('Unauthorized')) {
+        navigate("/start");
+      }
     } finally {
       setLoading(false);
     }
