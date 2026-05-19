@@ -64,7 +64,7 @@ async function request(path, options = {}) {
 
 // ─── Auth ───────────────────────────────────────────────────────
 export async function register(email, password, orgName) {
-  const data = await request("/auth/register", {
+  const data = await request("/agent/compliance/auth/register", {
     method: "POST",
     body: { email, password, org_name: orgName },
   });
@@ -75,7 +75,7 @@ export async function register(email, password, orgName) {
 }
 
 export async function login(email, password) {
-  const data = await request("/auth/login", {
+  const data = await request("/agent/compliance/auth/login", {
     method: "POST",
     body: { email, password },
   });
