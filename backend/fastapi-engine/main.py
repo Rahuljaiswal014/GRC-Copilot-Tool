@@ -5,7 +5,7 @@ from loguru import logger
 import uvicorn
 import sys
 import os
-
+from app.routers import auth
 from app.core.database import connect_mongo, connect_postgres, close_connections
 from app.routers import analysis, health, compliance_agent
 
@@ -57,6 +57,6 @@ async def internal_auth(request: Request, call_next):
 app.include_router(health.router)
 app.include_router(analysis.router, prefix="/analysis")
 app.include_router(compliance_agent.router, prefix="/agent/compliance")
-
+app.include_router(auth.router, prefix="/auth")
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)), reload=True, log_level="info")
