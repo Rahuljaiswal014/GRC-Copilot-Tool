@@ -35,3 +35,4 @@ backend/fastapi-engine/logs/
 
 # Database export
 database-export.json
+.env

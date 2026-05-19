@@ -1,40 +1,63 @@
 /**
- * DeepSeek AI Service
- * Handles automated question generation and report analysis
+ * AI Service for GRC Copilot
+ * Supports Groq, DeepSeek, and OpenAI-compatible APIs
  */
 
 const axios = require('axios');
 const logger = require('../config/logger');
 
-const API_KEY = process.env.DEEPSEEK_API_KEY;
-const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
-const API_URL = process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1/chat/completions';
+// Environment variables with fallbacks
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+const API_KEY = GROQ_API_KEY || DEEPSEEK_API_KEY;
 
-async function callDeepSeek(systemPrompt, userPrompt, maxTokens = 2000) {
+const MODEL = GROQ_API_KEY 
+  ? (process.env.GROQ_MODEL || 'llama-3.1-8b-instant')
+  : (process.env.DEEPSEEK_MODEL || 'deepseek-chat');
+
+const API_URL = GROQ_API_KEY
+  ? (process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions')
+  : (process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1/chat/completions');
+
+async function callLLM(systemPrompt, userPrompt, maxTokens = 2000) {
+  if (!API_KEY) {
+    logger.error('No AI API key found (GROQ_API_KEY or DEEPSEEK_API_KEY)');
+    return null;
+  }
+
   try {
-    const response = await axios.post(API_URL, {
+    const payload = {
       model: MODEL,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
       max_tokens: maxTokens,
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-    }, {
+      temperature: 0.0,
+    };
+
+    // Use json_mode if available (supported by both Groq and DeepSeek)
+    payload.response_format = { type: 'json_object' };
+
+    const response = await axios.post(API_URL, payload, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
       },
-      timeout: 30000,
+      timeout: 60000,
     });
 
     const content = response.data.choices[0].message.content;
     return JSON.parse(content);
   } catch (err) {
-    logger.error('DeepSeek API error:', err.response?.data || err.message);
+    logger.error('AI API error:', err.response?.data || err.message);
     return null;
   }
+}
+
+// Keep the old name as alias for backward compatibility if needed, but internally use callLLM
+async function callDeepSeek(systemPrompt, userPrompt, maxTokens = 2000) {
+  return callLLM(systemPrompt, userPrompt, maxTokens);
 }
 
 // ─── AI Question Generator ───────────────────────────────────────
@@ -69,7 +92,7 @@ Depth: ${depth} (quick=brief, intermediate=balanced, deep=thorough)
 
 Return JSON with sections array.`;
 
-  const result = await callDeepSeek(systemPrompt, userPrompt, 3000);
+  const result = await callLLM(systemPrompt, userPrompt, 3000);
   return result;
 }
 
@@ -114,7 +137,7 @@ ${gapSummary || 'No gaps identified'}
 
 Return JSON report.`;
 
-  return callDeepSeek(systemPrompt, userPrompt, 4000);
+  return callLLM(systemPrompt, userPrompt, 4000);
 }
 
-module.exports = { generateQuestions, generateReport, callDeepSeek };
+module.exports = { generateQuestions, generateReport, callDeepSeek, callLLM };

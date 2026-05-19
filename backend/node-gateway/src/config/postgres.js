@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 const logger = require('./logger');
 
@@ -6,7 +7,7 @@ const pool = new Pool({
   port: parseInt(process.env.PG_PORT) || 5432,
   database: process.env.PG_DATABASE || 'grc_copilot',
   user: process.env.PG_USER || 'grc_user',
-  password: process.env.PG_PASSWORD,
+  password: process.env.PG_PASSWORD || '',
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
