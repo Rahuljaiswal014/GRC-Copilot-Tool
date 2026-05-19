@@ -12,7 +12,7 @@ async def connect_mongo():
     global mongo_client, mongo_db
     uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/grc_copilot")
     mongo_client = AsyncIOMotorClient(uri)
-    mongo_db = mongo_client.get_database()
+    mongo_db = mongo_client["grc_copilot"]
     logger.info("MongoDB connected (FastAPI)")
 
 
